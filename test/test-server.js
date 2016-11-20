@@ -60,8 +60,8 @@ describe('Shopping List', function() {
 
     it('should edit an item on put', function(done) {
     	chai.request(app)
-    		.put('/items/5')
-    		.send({'name': 'Apples', 'id': '5'})
+    		.put('/items/1')
+    		.send({'name': 'Beans', 'id': '1'})
     		.end(function(err, res) {
     			should.equal(err, null);
     			res.should.have.status(200);
@@ -70,19 +70,42 @@ describe('Shopping List', function() {
     			res.body.should.have.property('name');
     			res.body.should.have.property('id');
     			res.body.name.should.be.a('string');
-    			res.body,id.should.be.a('number');
-    			res.body.name.should.equal('Apples');
-    			res.body.name.should.equal('5');
-    			storage.items.should.have.length(5);
-    			storage.items[4].should.have.a('object');
-    			storage.items[4].should.have.property('id');
-    			storage.items[4].should.have.property('name');
-    			storage.items[4].id.should.be.a('number');
-    			storage.items[4].name.should.be.a('string');
-    			storage.items[4].name.should.equal('Apples');
+    			res.body.id.should.be.a('number');
+    			res.body.name.should.equal('Beans');
+    			res.body.id.should.equal(1);
+    			storage.items.should.have.length(4);
+    			storage.items[0].should.have.a('object');
+    			storage.items[0].should.have.property('id');
+    			storage.items[0].should.have.property('name');
+    			storage.items[0].id.should.be.a('number');
+    			storage.items[0].name.should.be.a('string');
+    			storage.items[0].name.should.equal('Beans');
     			done();
     		});
     });
 
-    it('should delete an item on delete');
+    it('should delete an item on delete', function(done){
+    	chai.request(app)
+    		.delete('/items/1')
+    		.end(function(err, res){
+    			should.equal(err, null);
+                res.should.have.status(201);
+                res.should.be.json;
+                res.body.should.be.a('array');
+                res.body[0].should.be.a('object');
+                res.body[0].should.have.property('id');
+                res.body[0].should.have.property('name');
+                res.body[0].id.should.be.a('number');
+                res.body[0].id.should.equal(2)
+                res.body[0].name.should.be.a('string');
+                res.body[0].name.should.equal('Tomatoes');
+                storage.items[0].should.have.a('object');
+    			storage.items[0].should.have.property('id');
+    			storage.items[0].should.have.property('name');
+    			storage.items[0].id.should.be.a('number');
+    			storage.items[0].name.should.be.a('string');
+    			storage.items[0].name.should.equal('Tomatoes');
+    			done();
+    		});
+    });
 });

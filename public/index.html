@@ -257,8 +257,10 @@ ShoppingList.prototype.updateItemsView = function() {
         items: this.items
     };
     var itemList = $(this.itemListTemplate(context));
+
     this.itemList.replaceWith(itemList);
     this.itemList = itemList;
+
 };
 
 $(document).ready(function() {

@@ -4,6 +4,10 @@ var bodyParser = require('body-parser');
 var jsonParser = bodyParser.json();
 
 
+/***********************************
+Database
+************************************/
+
 var Storage = {
 	add: function(name) {
 		var item = {name: name, id: this.setId};
@@ -13,23 +17,27 @@ var Storage = {
 	},
 	delete: function(id){
 		var idNum = Number(id);
+		var chosenItem = [];
 		for (var i = 0; i < this.items.length; i++) {
 			if (this.items[i].id === idNum){
+				chosenItem = this.items[i];
 				this.items.splice(i,i+1);
 
 			}
 		}
-		return
+		return this.items;
 	},
 	edit: function(id, name){
 		var idNum = Number(id);
+		var chosenItem = "";
 		for (var i = 0; i < this.items.length; i++) {
 			if (this.items[i].id === idNum){
-				this.items[i].name = name;
+				this.items[i].name = name;			
+				chosenItem = this.items[i];
+
 			}
 		}
-		console.log(this.items)
-		return
+		return chosenItem;
 	},
 };
 
@@ -47,6 +55,11 @@ storage.add('Broad beans');
 storage.add('Tomatoes');
 storage.add('Peppers');
 
+/*************************
+</end of Database>
+**************************/
+
+
 
 var app = express();
 app.use(express.static('public'));
@@ -61,7 +74,6 @@ app.get('/users/:username', function(request, response){
 	response.sendStatus(400)
 	};
 
-	console.log(storage);
 	response.json(storage);
 	return;
 })
@@ -72,7 +84,6 @@ app.post('/items', jsonParser, function(request, response) {
     }
 
     var item = storage.add(request.body.name);
-
     response.status(201).json(item);
 });
 
@@ -80,9 +91,9 @@ app.delete('/items/:id', function(request, response){
 	if (!request.params.id){
 		return response.sendStatus(400);
 	} 
-	storage.delete(request.params.id);
+	var item = storage.delete(request.params.id);
 
-	response.status(201);
+	response.status(201).json(item);
 
 });
 
@@ -91,8 +102,9 @@ app.put('/items/:id', jsonParser, function(request, response){
 		return response.sendStatus(400);
 	} 
 
-	storage.edit(request.params.id, request.body.name)
-	response.status(200);
+	var item = storage.edit(request.params.id, request.body.name)
+
+	response.status(200).json(item);
 });
 
 app.listen(process.env.PORT || 8080, process.env.IP);
